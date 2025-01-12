@@ -1,0 +1,58 @@
+name: Publish to NPM
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  test-build-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "npm"
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      - name: Validate semantic version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          if [[ ! "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version tag: $VERSION"
+            exit 1
+          fi
+
+      # 4. Update package version from release tag
+      - name: Update package version
+        run: |
+          # Extract the version from the release tag
+          VERSION=${GITHUB_REF#refs/tags/}
+          echo "Release version: $VERSION"
+
+          # Update the package.json file
+          npm version --no-git-tag-version $VERSION
+
+      # 5. Run tests
+      - name: Run tests
+        run: npm test
+
+      # 6. Build the package
+      - name: Build the package
+        run: npm run build
+
+      # 7. Publish to NPM
+      - name: Publish to NPM
+        if: success() # Only publish if all previous steps succeed
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
