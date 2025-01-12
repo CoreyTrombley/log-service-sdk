@@ -5,6 +5,23 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
+  "author": "Corey Trombley",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CoreyTrombley/log-service-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CoreyTrombley/log-service-sdk/issues"
+  },
+  "homepage": "https://github.com/CoreyTrombley/log-service-sdk#readme",
+  "keywords": [
+    "logging",
+    "sdk",
+    "winston",
+    "logging-service",
+    "typescript",
+    "nodejs"
+  ],
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-typescript": "^7.26.0",
